@@ -16,9 +16,9 @@ const favoriteIcon = ({ product }) => {
   return (
     <TouchableOpacity onPress={handleToggleFavorite} style={styles.favoriteIconContainer}>
       {isfavorite ? (
-        <Icon name="heart" size={30} color='red' />
+        <Icon name="heart" size={25} color='red' />
       ) : (
-        <Icon name="heart-outline" size={30} color="black" />
+        <Icon name="heart-outline" size={25} color="red" />
       )}
     </TouchableOpacity>
   );

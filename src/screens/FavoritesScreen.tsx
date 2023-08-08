@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 import { RootState } from '../ReduxToolkit/store';
-import { saveFavorite } from '../ReduxToolkit/reducers/favoriteSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Product {
@@ -17,33 +16,26 @@ interface Product {
 
 const FavoriteScreen = () => {
   const favoriteProducts = useSelector((state: RootState) => state.favorite.products);
-  const dispatch = useDispatch();
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     (async () => {
-      const products = await AsyncStorage.getItem('favoriteProducts')
-      if(products?.length) {
-        const parsedProducts = JSON.parse(products)
-        setProducts(parsedProducts)
+      const storedProducts = await AsyncStorage.getItem('favoriteProducts');
+      if (storedProducts?.length) {
+        const parsedProducts: Product[] = JSON.parse(storedProducts);
+        setProducts(parsedProducts);
       }
-    })()
-  }, [favoriteProducts]);
+    })();
+  }, []);
 
-  const saveFavoriteToAsyncStorage = async () => {
-    try {
-      await AsyncStorage.setItem('favoriteProducts', JSON.stringify(favoriteProducts));
-    } catch (error) {
-      console.error('Error saving favorite to AsyncStorage:', error);
-    }
-  };
-
-  const renderItem = ({ item }: { item: Product }) => (
+  const renderProduct = ({ item }: { item: Product }) => (
     <TouchableOpacity>
-      <View style={styles.productContainer}>     
+      <View style={styles.productContainer}>
         <Image style={styles.productImage} source={{ uri: item.image }} />
-        <Text style={styles.productTitle}>{item.title}</Text>
-        <Text style={styles.productPrice}>${item.price}</Text>
+        <View style={styles.productDetails}>
+          <Text style={styles.productTitle}>{item.title}</Text>
+          <Text style={styles.productPrice}>${item.price}</Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -52,53 +44,77 @@ const FavoriteScreen = () => {
     return (
       <View style={styles.container}>
         <View style={styles.emptyFavoriteContainer}>
-          <Text style={styles.emptyFavoriteText}>No products in favorite list yet.</Text>
+          <Text style={styles.emptyFavoriteText}>No products in the favorite list yet.</Text>
         </View>
       </View>
     );
   }
-  
-
-  // Key to force re-render when numColumns changes
-  const listKey = favoriteProducts.length + 'columnList';
 
   return (
-    <FlatList
-      data={favoriteProducts}
-      key={listKey} // Use key to force re-render when numColumns changes
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={renderItem}
-      contentContainerStyle={styles.listContainer}
-      numColumns={1} // Display one product per row (one-column list)
-    />
+    <View style={styles.container}>
+      <Text style={styles.header}>Favorite Products</Text>
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderProduct}
+        contentContainerStyle={styles.listContainer}
+        numColumns={2} // Display two products per row (grid format)
+      />
+    </View>
   );
 };
+
+const windowWidth = Dimensions.get('window').width;
+const itemWidth = windowWidth / 2 - 12; // Adjusted for margin and padding
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 2,
+    backgroundColor: '#f2f3f4',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
   },
   listContainer: {
-    alignItems: 'flex-start', 
+    paddingHorizontal: 8,
   },
   productContainer: {
-    flexDirection: 'row', 
-    marginBottom: 10,
+    flexDirection: 'column',
+    marginBottom: 20,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 20,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+    width: itemWidth,
+    height: 265,
+    margin: 8,
   },
   productImage: {
-    width: 80,
-    height: 80,
+    width: 95,
+    height: 150,
     resizeMode: 'contain',
+    marginRight: 10,
+  },
+  productDetails: {
+    flex: 1,
   },
   productTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginRight: 10, 
   },
   productPrice: {
     fontSize: 14,
+    fontWeight: 'bold',
+    color: 'black',
   },
   emptyFavoriteContainer: {
     flex: 1,
@@ -109,6 +125,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
 
 export default FavoriteScreen;

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Button, FlatList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../ReduxToolkit/store';
-import { clearCart, saveCart } from '../ReduxToolkit/reducers/cartSlice';
+import { clearCart } from '../ReduxToolkit/reducers/cartSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Product {
@@ -18,55 +18,43 @@ interface Product {
 const CartScreen = () => {
   const cartProducts = useSelector((state: RootState) => state.cart.products);
   const dispatch = useDispatch();
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     (async () => {
-      const products = await AsyncStorage.getItem('cartProducts')
-      if(products?.length) {
-        const parsedProducts = JSON.parse(products)
-        setProducts(parsedProducts)
+      const storedProducts = await AsyncStorage.getItem('cartProducts');
+      if (storedProducts) {
+        const parsedProducts = JSON.parse(storedProducts);
+        setProducts(parsedProducts);
       }
-    })()
+    })();
   }, [cartProducts]);
 
-  const saveCartToAsyncStorage = async () => {
-    try {
-      await AsyncStorage.setItem('cartProducts', JSON.stringify(cartProducts));
-    } catch (error) {
-      console.error('Error saving cart to AsyncStorage:', error);
-    }
-  };
-
   const calculateTotalPrice = () => {
-    let totalPrice = 0;
-    products.forEach((product: Product) => {
-      totalPrice += product.price * product.quantity;
-    });
-    return totalPrice;
+    return products.reduce((total, product) => total + product.price * product.quantity, 0);
   };
 
-  const handleClearCart = () => {
+  const handleClearCart = async () => {
     // Dispatch the clearCart action
     dispatch(clearCart());
     // Clear the cartProducts from AsyncStorage as well
-    AsyncStorage.removeItem('cartProducts');
+    await AsyncStorage.removeItem('cartProducts');
   };
 
   const renderItem = ({ item }: { item: Product }) => (
     <TouchableOpacity>
       <View style={styles.productContainer}>
-        <Image style={styles.productImage} source={{ uri: item?.image }} />
+        <Image style={styles.productImage} source={{ uri: item.image }} />
         <View style={styles.productInfoContainer}>
-          <Text style={styles.productTitle}>{item?.title}</Text>
-          <Text style={styles.productPrice}>${item?.price}</Text>
-          <Text style={styles.quantityText}>Quantity: {item?.quantity}</Text>
+          <Text style={styles.productTitle}>{item.title}</Text>
+          <Text style={styles.productPrice}>${item.price}</Text>
+          <Text style={styles.quantityText}>Quantity: {item.quantity}</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 
-  if (products?.length === 0) {
+  if (products.length === 0) {
     return (
       <View style={styles.container}>
         <View style={styles.emptyCartContainer}>
@@ -75,15 +63,16 @@ const CartScreen = () => {
       </View>
     );
   }
-  
 
   return (
     <View style={styles.container}>
+      <Text style={styles.header}>Cart Products</Text>
       <FlatList
         data={products}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
+        numColumns={2} // Display two products per row (grid format)
       />
       <Text style={styles.totalPriceText}>Total Price: ${calculateTotalPrice()}</Text>
       <Button title="Clear Cart" onPress={handleClearCart} />
@@ -94,20 +83,44 @@ const CartScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 2,
+    backgroundColor: '#f2f3f4',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
   },
   listContainer: {
-    flexGrow: 1,
+    paddingHorizontal: 8,
+  },
+  productRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    marginBottom: 20,
   },
   productContainer: {
-    flexDirection: 'row',
-    marginBottom: 10,
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 20,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+    width: 170,
+    height: 290,
+    margin: 8,
   },
   productImage: {
-    width: 80,
-    height: 80,
+    width: 95,
+    height: 150,
     resizeMode: 'contain',
+    marginRight: 10,
   },
   productInfoContainer: {
     flex: 1,
@@ -119,10 +132,20 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 14,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  emptyFavoriteContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyFavoriteText: {
+    fontSize: 16,
   },
   quantityText: {
-    fontSize: 12,
-    color: 'gray',
+    fontSize: 15,
+    color: 'black',
   },
   totalPriceText: {
     fontSize: 18,

@@ -8,6 +8,7 @@ import SearchBar from './src/components/SearchBar';
 import LoginScreen from './src/screens/LoginScreen';
 import { Provider } from 'react-redux';
 import store from './src/ReduxToolkit/store';
+import CategoryScreen from './src/screens/CategoryScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ const App = () => {
           />
           <Stack.Screen name="Marketplace" component={MyTabs} />
           <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="CategoryScreen" component={CategoryScreen} />
           <Stack.Screen name="ProductDetail" component={DetailsScreen} />   
         </Stack.Navigator>
       </NavigationContainer>

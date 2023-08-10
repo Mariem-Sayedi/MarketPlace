@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Button, FlatList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../ReduxToolkit/store';
-import { clearCart } from '../ReduxToolkit/reducers/cartSlice';
+import { clearCart } from '../ReduxToolkit/Reducers/CartSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MAIN_BLUE_COLOR } from '../Constants/Colors';
 
 interface Product {
   id: number;
@@ -22,10 +23,13 @@ const CartScreen = () => {
 
   useEffect(() => {
     (async () => {
+      console.log('cartProducts',cartProducts)
       const storedProducts = await AsyncStorage.getItem('cartProducts');
       if (storedProducts) {
         const parsedProducts = JSON.parse(storedProducts);
         setProducts(parsedProducts);
+      } else {
+        setProducts([])
       }
     })();
   }, [cartProducts]);
@@ -35,7 +39,6 @@ const CartScreen = () => {
   };
 
   const handleClearCart = async () => {
-    // Dispatch the clearCart action
     dispatch(clearCart());
     // Clear the cartProducts from AsyncStorage as well
     await AsyncStorage.removeItem('cartProducts');
@@ -72,10 +75,16 @@ const CartScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
-        numColumns={2} // Display two products per row (grid format)
+        numColumns={2} // Display two products per row 
       />
       <Text style={styles.totalPriceText}>Total Price: ${calculateTotalPrice()}</Text>
-      <Button title="Clear Cart" onPress={handleClearCart} />
+      <View style={styles.clearCartButtonContainer}>
+        <Button
+          title="Clear Cart"
+          onPress={handleClearCart}
+          color={MAIN_BLUE_COLOR}
+        />
+      </View>
     </View>
   );
 };
@@ -112,12 +121,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
-    width: 170,
-    height: 290,
+    width: 190,
+    height: 310,
     margin: 8,
   },
   productImage: {
-    width: 95,
+    width: 100,
     height: 150,
     resizeMode: 'contain',
     marginRight: 10,
@@ -127,8 +136,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   productTitle: {
-    fontSize: 16,
     fontWeight: 'bold',
+    marginTop: 8,
   },
   productPrice: {
     fontSize: 14,
@@ -160,6 +169,14 @@ const styles = StyleSheet.create({
   },
   emptyCartText: {
     fontSize: 16,
+  },
+  clearCartButtonContainer: {
+    marginTop: 10,
+    backgroundColor: MAIN_BLUE_COLOR,
+    borderRadius: 40, 
+    paddingVertical: 12, 
+    paddingHorizontal: 8, 
+    alignSelf: 'center',
   },
 });
 

@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
-import { RootState } from '../ReduxToolkit/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Product } from '../Interfaces/Index';
+// import LottieView from 'lottie-react-native';
 
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  category: string;
-  description: string;
-  image: string;
-  quantity: number;
-}
 
 const FavoriteScreen = () => {
   const favoriteProducts = useSelector((state: RootState) => state.favorite.products);
@@ -44,7 +36,12 @@ const FavoriteScreen = () => {
     return (
       <View style={styles.container}>
         <View style={styles.emptyFavoriteContainer}>
-          <Text style={styles.emptyFavoriteText}>No products in the favorite list yet.</Text>
+        {/* <LottieView
+        source={require('../Assets/emptyAnimation.json')} 
+        autoPlay
+        loop
+        />          */}
+       <Text style={styles.emptyFavoriteText}>No products in the favorite list yet.</Text>
         </View>
       </View>
     );
@@ -65,7 +62,7 @@ const FavoriteScreen = () => {
 };
 
 const windowWidth = Dimensions.get('window').width;
-const itemWidth = windowWidth / 2 - 12; // Adjusted for margin and padding
+const itemWidth = windowWidth / 2 - 12; 
 
 const styles = StyleSheet.create({
   container: {
@@ -108,8 +105,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productTitle: {
-    fontSize: 16,
     fontWeight: 'bold',
+    marginTop: 8,
   },
   productPrice: {
     fontSize: 14,

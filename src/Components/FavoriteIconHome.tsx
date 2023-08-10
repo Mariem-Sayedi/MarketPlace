@@ -2,9 +2,9 @@ import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleFavorite } from '../ReduxToolkit/reducers/favoriteSlice';
+import { toggleFavorite } from '../ReduxToolkit/Reducers/FavoriteSlice';
 
-const favoriteIcon = ({ product }) => {
+const FavoriteIcon = ({ product }) => {
   const dispatch = useDispatch();
   const favoriteProducts = useSelector((state) => state.favorite.products);
   const isfavorite = favoriteProducts.some((item) => item.id === product.id);
@@ -32,4 +32,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default favoriteIcon;
+export default FavoriteIcon;

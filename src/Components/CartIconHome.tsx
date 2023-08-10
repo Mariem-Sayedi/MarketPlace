@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleCart } from '../ReduxToolkit/reducers/cartSlice';
+import { toggleCart } from '../ReduxToolkit/Reducers/CartSlice';
 
 const CartIcon = ({ product }) => {
   const dispatch = useDispatch();

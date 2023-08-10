@@ -1,31 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, TextInput, Button } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, TextInput, Button, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
-import CartIconD from '../components/CartIconD';
-import FavoriteIconD from '../components/FavoriteIconD';
-import { toggleCart } from '../ReduxToolkit/reducers/cartSlice';
-import AddToCart from '../components/AddToCart';
+import CartIconDetails from '../Components/CartIconDetails';
+import FavoriteIconDetails from '../Components/FavoriteIconDetails';
+import { toggleCart } from '../ReduxToolkit/Reducers/CartSlice';
+import AddToCart from '../Components/AddToCart';
+import { DetailsScreenProps, Product } from '../Interfaces/Index';
 
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  category: string;
-  description: string;
-  image: string;
-  quantity: number;
-}
-
-interface DetailsScreenProps {
-  route: {
-    params: {
-      product: Product;
-    };
-  };
-}
 
 const DetailsScreen: React.FC<DetailsScreenProps> = ({ route }) => {
-  const { product } = route.params;
+  const { product} = route.params;
   const dispatch = useDispatch();
   const [quantityInput, setQuantityInput] = useState('0'); 
 
@@ -44,22 +28,24 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ route }) => {
         <Text style={styles.productPrice}>${product.price}</Text>
         <Text style={styles.productDescription}>{product.description}</Text>
       </View>
-      <AddToCart product={product} />
+      <AddToCart product={product}/>
       {/* Cart and Favorite icons */}
-      <FavoriteIconD product={product} />
-      <CartIconD product={product} />
+      <FavoriteIconDetails product={product} />
     </ScrollView>
   );
 };
-
+const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
   },
   productImage: {
-    width: 350,
-    height: 250,
+    width: windowWidth - 50, // Set the width to the window width minus padding
+    height: 250,  // Keep the original height
     resizeMode: 'contain',
+    marginBottom: 16,
+    marginRight: 20,
+
   },
   productDetails: {
     marginBottom: 16,
@@ -93,6 +79,7 @@ const styles = StyleSheet.create({
     padding: 8,
     width: 80,
   },
+ 
 });
 
 export default DetailsScreen;

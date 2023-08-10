@@ -1,74 +1,77 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Alert } from 'react-native';
-import axios from 'axios';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, LogBox } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { login } from '../ReduxToolkit/Actions/LoginAction';
+import { StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { MAIN_BLUE_COLOR } from '../Constants/Colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loginSuccess } from '../ReduxToolkit/Reducers/LoginSlice';
+import { AppLogo } from '../Components/Logo';
 
-const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  useEffect(() => {
-    // Check for the authentication token when the app starts
-    checkAuthToken();
-  }, []);
-
-  const checkAuthToken = async () => {
-    try {
-      // Retrieve the authentication token from AsyncStorage
-      const authToken = await AsyncStorage.getItem('authToken');
-
-      // If the token exists, navigate to the main screen or dashboard
-      if (authToken) {
-        navigation.replace('Marketplace'); // Use replace instead of navigate to prevent going back to login screen
-      }
-    } catch (error) {
-      console.log('Error retrieving authentication token:', error);
-    }
-  };
+const LoginScreen = () => {
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState('mor_2314');
+  const [password, setPassword] = useState('83r5^_');
+  const navigation = useNavigation();
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('https://fakestoreapi.com/auth/login', {
-        username: username,
-        password: password,
-      });
-
-      // Assuming the API returns an authentication token on successful login
-      const authToken = response.data.token;
-
-      // Store the authentication token in AsyncStorage
-      await AsyncStorage.setItem('authToken', authToken);
-
-      // Redirect the user to the main screen or dashboard
-      navigation.replace('Marketplace'); // Use replace instead of navigate to prevent going back to login screen
+      // Simulating a successful login with a token
+      const token = 'your_auth_token_here';
+      await dispatch(loginSuccess(token));
+      await AsyncStorage.setItem('authToken', token);
+      navigation.navigate('Marketplace');
     } catch (error) {
-      Alert.alert('Login Error', 'Invalid username or password');
+      // Handle login error
     }
   };
-
-  // Use navigation.setOptions to set the header title and other options
-  useEffect(() => {
-    navigation.setOptions({
-      title: 'Login', // Set the header title
-    });
-  }, []);
-
   return (
-    <View>
+    <View style={styles.container}>
+      <View style={styles.iconContainer}>
+        <AppLogo/>
+      </View>
+      <Text style={styles.title}>Login</Text>
       <TextInput
-        placeholder="username"
+        style={styles.input}
+        placeholder="Username"
         value={username}
         onChangeText={setUsername}
       />
       <TextInput
+        style={styles.input}
         placeholder="Password"
+        secureTextEntry
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
       />
       <Button title="Log in" onPress={handleLogin} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  iconContainer: {
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+  },
+});
 
 export default LoginScreen;

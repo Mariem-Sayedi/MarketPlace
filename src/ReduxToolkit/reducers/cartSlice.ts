@@ -40,10 +40,8 @@ const cartSlice = createSlice({
     },
     clearCart: (state) => {
       state.products = [];
-      AsyncStorage.setItem('cartProducts', JSON.stringify([]));
-    },
-  },
-});
-
+      AsyncStorage.setItem('cartProducts', JSON.stringify([]));  
+    }
+  }});
 export const { toggleCart, clearCart, saveCart } = cartSlice.actions;
 export default cartSlice.reducer;

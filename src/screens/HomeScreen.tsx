@@ -1,37 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator, Modal } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../ReduxToolkit/reducers/productsReducer';
+import { fetchProducts } from '../ReduxToolkit/Actions/ProductsActions';
 import { useNavigation } from '@react-navigation/native';
-import FavoriteIconH from '../components/FavoriteIconH';
 import Icon from 'react-native-vector-icons/Ionicons';
-import SearchBar from '../components/SearchBar';
-import CategoryScreen from './CategoryScreen';
-
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  category: string;
-  description: string;
-  image: string;
-}
+import { Product } from '../Interfaces/Index';
+import FavoriteIcon from '../Components/FavoriteIconHome';
+import SearchBar from '../Components/SearchBar';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
-  const { items, status, error } = useSelector((state) => state.products);
+  const { items, loading, error } = useSelector((state) => state.products);
   const navigation = useNavigation();
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    dispatch(fetchProducts());
-    setFilteredProducts(items); // Initialize filteredProducts with all products when the component mounts
-  }, [dispatch, items]);
+    const fetchInitialData = async () => {
+      dispatch(fetchProducts());
+    };
+  
+    fetchInitialData();
+  }, []);
+
+  useEffect(() => {
+    if (items?.length) {
+      setFilteredProducts(items);
+    }
+  }, [items]);
 
   const handleImageClick = (item: Product) => {
-    navigation.navigate('ProductDetail', { product: item });
+    navigation.navigate('Product Detail', { product: item });
   };
+
+  const handleSearch = useCallback((searchText) => {
+    const filteredItems = items.filter(item =>
+      item.title.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredProducts(filteredItems);
+  }, [items]);
 
   const renderItem = ({ item }: { item: Product }) => (
     <TouchableOpacity onPress={() => handleImageClick(item)}>
@@ -39,7 +45,7 @@ const HomeScreen = () => {
         <Image style={styles.productImage} source={{ uri: item.image }} />
         <Text style={styles.productTitle}>{item.title}</Text>
         <Text style={styles.productPrice}>${item.price}</Text>
-        <FavoriteIconH product={item} />
+        <FavoriteIcon product={item} />
       </View>
     </TouchableOpacity>
   );
@@ -58,43 +64,16 @@ const HomeScreen = () => {
     <Text style={styles.errorText}>Error: {error}</Text>
   );
 
-  const handleOpenCategoryModal = () => {
-    setShowCategoryModal(true);
-  };
-
-  const handleFilterByCategory = async (category: string) => {
-    // Fetch products based on the selected category
-    try {
-      const response = await fetch(`https://fakestoreapi.com/products/category/${category}`);
-      const data = await response.json();
-      setFilteredProducts(data);
-    } catch (error) {
-      console.error('Error fetching products by category:', error);
-    }
-
-    setShowCategoryModal(false); // Close the modal after selecting a category
-  };
-
   return (
     <View style={styles.container}>
-      <SearchBar onSearch={undefined} navigation={undefined} />
-      <TouchableOpacity style={styles.filterButton} onPress={handleOpenCategoryModal}>
-        <Text style={styles.filterButtonText}>Filter by Category</Text>
-      </TouchableOpacity>
+      <SearchBar onSearch={handleSearch} navigation={undefined} />
       <FlatList
-        data={filteredProducts} // Use filteredProducts instead of items
+        data={filteredProducts} 
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
         numColumns={2}
       />
-
-      {/* Add the CategoryScreen as a Modal */}
-      {showCategoryModal && (
-        <Modal animationType="slide" transparent={true} visible={showCategoryModal}>
-          <CategoryScreen onFilter={handleFilterByCategory} onClose={() => setShowCategoryModal(false)} />
-        </Modal>
-      )}
     </View>
   );
 };

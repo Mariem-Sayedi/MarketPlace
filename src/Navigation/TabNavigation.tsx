@@ -1,9 +1,10 @@
 import React from 'react';
-import HomeScreen from "../screens/HomeScreen";
-import CartScreen from '../screens/CartScreen';
-import FavouritesScreen from '../screens/FavoritesScreen';
+import HomeScreen from "../Screens/HomeScreen";
+import CartScreen from '../Screens/CartScreen';
+import FavouritesScreen from '../Screens/FavoritesScreen';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { MAIN_BLUE_COLOR } from '../Constants/Colors';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -12,7 +13,7 @@ const  MyTabs = ()=> {
     <Tab.Navigator
       initialRouteName="HomeScreen"
       activeColor="white"
-      barStyle={{ backgroundColor: '#378ff8' }}
+      barStyle={{ backgroundColor: MAIN_BLUE_COLOR }}
     >
       <Tab.Screen
         name="HomeScreen"
@@ -20,7 +21,7 @@ const  MyTabs = ()=> {
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({ color }) => (
-            <Icon name="home" color={color} size={30} />
+            <Icon name="home" color={color} size={27} />
           ),
         }}
       />
@@ -30,7 +31,7 @@ const  MyTabs = ()=> {
         options={{
           tabBarLabel: 'Cart',
           tabBarIcon: ({ color }) => (
-            <Icon name="cart" color={color} size={37} />
+            <Icon name="cart" color={color} size={30} />
           ),
         }}
       />
@@ -40,7 +41,7 @@ const  MyTabs = ()=> {
         options={{
           tabBarLabel: 'Favourites',
           tabBarIcon: ({ color }) => (
-            <Icon name="heart" color={color} size={30} />
+            <Icon name="heart" color={color} size={27} />
           ),
         }}
       />

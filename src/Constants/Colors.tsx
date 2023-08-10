@@ -1,0 +1,1 @@
+export const MAIN_BLUE_COLOR = '#378ff8';

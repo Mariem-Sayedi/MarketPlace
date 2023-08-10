@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleCart } from '../ReduxToolkit/reducers/cartSlice';
+import { toggleCart } from '../ReduxToolkit/Reducers/CartSlice';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 
 const CartIcon = ({ product }) => {
@@ -20,11 +20,11 @@ const CartIcon = ({ product }) => {
   };
 
   const navigateToCartScreen = () => {
-    navigation.navigate('CartScreen'); // Navigate to CartScreen
+    navigation.navigate('CartScreen'); 
   };
 
   return (
-    <TouchableOpacity onPress={isCart ? navigateToCartScreen : handleToggleCart} style={styles.cartIconContainer}>
+    <TouchableOpacity onPress={ navigateToCartScreen } style={styles.cartIconContainer}>
       {isCart ? (
         <View style={styles.cartIcon}>
           <Icon name="cart" size={30} color={getTotalCartCount() > 0 ? 'red' : '#378ff8'} />
@@ -40,6 +40,7 @@ const CartIcon = ({ product }) => {
 };
 
 const styles = StyleSheet.create({
+  
   cartIconContainer: {
     position: 'absolute',
     top: 10,

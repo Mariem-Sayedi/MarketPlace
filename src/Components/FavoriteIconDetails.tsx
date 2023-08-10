@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleFavorite } from '../ReduxToolkit/reducers/favoriteSlice';
+import { toggleFavorite } from '../ReduxToolkit/Reducers/FavoriteSlice';
 
 const favoriteIcon = ({ product }) => {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ const favoriteIcon = ({ product }) => {
       {isfavorite ? (
         <Icon name="heart" size={30} color='red' />
       ) : (
-        <Icon name="heart-outline" size={30} color="black" />
+        <Icon name="heart-outline" size={30} color="red" />
       )}
     </TouchableOpacity>
   );

@@ -30,12 +30,15 @@ const favoriteSlice = createSlice({
         // If the product is not in the favorite list, add it
         state.products.push(product);
       }
-
       // Save the updated favorite list to AsyncStorage
       AsyncStorage.setItem('favoriteProducts', JSON.stringify(state.products));
     },
+    clearFavorite: (state) => {
+      state.products = [];
+      AsyncStorage.setItem('favoriteProducts', JSON.stringify([]));  
+    }
   },
 });
 
-export const { toggleFavorite, saveFavorite } = favoriteSlice.actions;
+export const { toggleFavorite, saveFavorite, clearFavorite } = favoriteSlice.actions;
 export default favoriteSlice.reducer;

@@ -1,17 +1,32 @@
 import React from 'react';
-import { Button } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { logout } from '../ReduxToolkit/Reducers/LoginSlice'; 
+import Icon from 'react-native-vector-icons/Ionicons';
+import { MAIN_BLUE_COLOR } from '../Constants/Colors';
+import { Alert, TouchableOpacity } from 'react-native';
+import { clearCart } from '../ReduxToolkit/Reducers/CartSlice';
+import { clearFavorite } from '../ReduxToolkit/Reducers/FavoriteSlice';
 
 const LogoutButton = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    // Dispatch the logout action
-    dispatch(logout());
+    Alert.alert("Alert","Do you really want to logout?",[
+        {text: 'Logout', onPress: () => 
+       {dispatch(clearFavorite())
+        dispatch(clearCart())
+        dispatch(logout())}
+       },
+        {text: 'cancel'}
+    ])
+
+    
   };
 
-  return <Button title="Log out" onPress={handleLogout} />;
-};
+  return (
+    <TouchableOpacity onPress={handleLogout}>
+    <Icon name="log-out-outline" size={35} color={MAIN_BLUE_COLOR} />
+    </TouchableOpacity>
+    )};
 
 export default LogoutButton;

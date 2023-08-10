@@ -5,16 +5,8 @@ import { RootState } from '../ReduxToolkit/store';
 import { clearCart } from '../ReduxToolkit/Reducers/CartSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MAIN_BLUE_COLOR } from '../Constants/Colors';
+import { Product } from '../Interfaces/Index';
 
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  category: string;
-  description: string;
-  image: string;
-  quantity: number;
-}
 
 const CartScreen = () => {
   const cartProducts = useSelector((state: RootState) => state.cart.products);

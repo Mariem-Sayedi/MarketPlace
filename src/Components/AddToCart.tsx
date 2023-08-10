@@ -23,18 +23,18 @@ const AddToCart = ({ product }) => {
       {isCart ? (
         <View style={styles.AddToCartButtonContainer}>
                  <Button title="Add to Cart" color={getTotalCartCount() > 0 ?'#378ff8' : '#378ff8'} onPress={handleToggleCart}/>
-          {/* {getTotalCartCount() > 0 && (
-            <Text>{getTotalCartCount()}</Text>
-          )} */}
+          {getTotalCartCount() > 0 && (
+            <Text style={styles.quantityText}>{getTotalCartCount()}</Text>
+          )}
         </View>
       ) : (
         <View style={styles.AddToCartButtonContainer}>
         <Button title="Add to Cart" color={getTotalCartCount() > 0 ? '#378ff8' : '#378ff8'} onPress={handleToggleCart}/>
-        </View>
-        //  {getTotalCartCount() > 0 && (
-        //   <Text>{getTotalCartCount()}</Text>
-        // )}
+        {getTotalCartCount() > 0 && (
+          <Text style={styles.quantityText}>{getTotalCartCount()}</Text>
         )}
+        </View>
+         )}
     </TouchableOpacity>
   );
 };
@@ -48,5 +48,9 @@ AddToCartButtonContainer: {
   paddingHorizontal: 8, 
   alignSelf: 'center',
 },
+quantityText:{
+  alignSelf: 'center',
+  color: 'white',
+}
 });
 export default AddToCart;

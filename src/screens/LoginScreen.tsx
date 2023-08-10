@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, LogBox } from 'react-native';
+import { View, Text, TextInput, Button, LogBox, Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -14,9 +14,39 @@ const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const [usernameError, setUsernameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  const validateForm = () => {
+    setUsernameError('');
+    setPasswordError('');
+
+    let isValid = true;
+
+    if (!username.length) {
+      setUsernameError('Please enter a username');
+      isValid = false;
+    } else if (username.length < 3) {
+      setUsernameError('Username must be at least 3 characters');
+      isValid = false;
+    }
+
+    if (!password.length) {
+      setPasswordError('Please enter a password');
+      isValid = false;
+    } else if (password.length < 3) {
+      setPasswordError('Password must be at least 3 characters');
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   const handleLogin = async () => {
     try {
+      const isValid = validateForm();
+      if (!isValid) return;
+
       // Simulating a successful login with a token
       const token = 'your_auth_token_here';
       await dispatch(loginSuccess(token));
@@ -26,10 +56,11 @@ const LoginScreen = () => {
       // Handle login error
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
-        <AppLogo/>
+        <AppLogo />
       </View>
       <Text style={styles.title}>Login</Text>
       <TextInput
@@ -38,6 +69,7 @@ const LoginScreen = () => {
         value={username}
         onChangeText={setUsername}
       />
+      {usernameError ? <Text style={styles.error}>{usernameError}</Text> : null}
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -45,13 +77,9 @@ const LoginScreen = () => {
         value={password}
         onChangeText={setPassword}
       />
-      <View style={styles.buttonsContainer}>
-        <View style={styles.button}>
-          <Button title="Log in" onPress={handleLogin} />
-        </View>
-        <View style={styles.button}>
-          <LogoutButton />
-        </View>
+      {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
+      <View style={styles.button}>
+        <Button title="Log in" onPress={handleLogin} />
       </View>
     </View>
   );
@@ -93,7 +121,11 @@ const styles = StyleSheet.create({
     borderRadius: 30, 
     paddingVertical: 12, 
     paddingHorizontal: 8, 
-    alignSelf: 'center',
+    align: 'center',
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 

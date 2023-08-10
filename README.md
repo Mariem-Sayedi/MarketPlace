@@ -38,5 +38,3 @@ Before you begin, ensure you have the following prerequisites:
 
 3. For IOS
    npm run ios
-
-

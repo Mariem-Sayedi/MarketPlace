@@ -10,6 +10,7 @@ import ProductsSlice from '../ReduxToolkit/Reducers/ProductsSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginSuccess } from '../ReduxToolkit/Reducers/LoginSlice';
 import { AppLogo } from '../Components/Logo';
+import LogoutButton from '../Components/LogOutButton';
 
 const Stack = createStackNavigator();
 
@@ -32,9 +33,12 @@ const RootNavigator = () => {
     <Stack.Navigator>
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="Marketplace" component={MyTabs} options={{
+          <Stack.Screen name="Marketplace" component={MyTabs} 
+          options={{
               headerTitle: () => <AppLogo />, 
-            }}/>
+              headerRight: () => <LogoutButton />,
+            }}
+            />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen
             name="Product Detail"

@@ -4,7 +4,8 @@ export interface Product  {
     description: string;
     price: number;
     image: string;
-    category: string;
+    quantity: number;
+
   };
  
   export interface DetailsScreenProps {
@@ -13,4 +14,13 @@ export interface Product  {
         product: Product;
       };
     };
-  }
+  };
+  export interface User  {
+    username: string;
+    password: string;
+  };
+  
+  export interface AuthState {
+    user: User | null;
+    isAuthenticated: boolean;
+  };

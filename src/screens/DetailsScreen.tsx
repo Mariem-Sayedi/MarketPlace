@@ -6,6 +6,7 @@ import FavoriteIconDetails from '../Components/FavoriteIconDetails';
 import { toggleCart } from '../ReduxToolkit/Reducers/CartSlice';
 import AddToCart from '../Components/AddToCart';
 import { DetailsScreenProps, Product } from '../Interfaces/Index';
+import { windowWidth } from '../Constants';
 
 
 const DetailsScreen: React.FC<DetailsScreenProps> = ({ route }) => {
@@ -34,14 +35,13 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ route }) => {
     </ScrollView>
   );
 };
-const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   container: {
     padding: 16,
   },
   productImage: {
     width: windowWidth - 50, // Set the width to the window width minus padding
-    height: 250,  // Keep the original height
+    height: 250,  
     resizeMode: 'contain',
     marginBottom: 16,
     marginRight: 20,
@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
   productTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 16,
+    marginRight: 20,
   },
   productPrice: {
     fontSize: 18,

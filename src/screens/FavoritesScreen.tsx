@@ -50,11 +50,11 @@ const FavoriteScreen = () => {
     return (
       <View style={styles.container}>
         <View style={styles.emptyFavoriteContainer}>
-          {/* <LottieView
+          <LottieView
             source={require('../Assets/emptyAnimation.json')}
             autoPlay
             loop
-          /> */}
+          />
           <Text style={styles.emptyFavoriteText}>No products in favorite list yet.</Text>
         </View>
       </View>

@@ -1,27 +1,36 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { login } from '../Actions/LoginAction';
+import { AuthState, User } from '../../Interfaces/index';
+
+const initialState: AuthState = {
+  user: null,
+  isAuthenticated: false,
+};
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    token: null,
-    isAuthenticated: false,
-  },
+  initialState,
   reducers: {
-    loginSuccess(state, action: PayloadAction<string>) {
-      state.token = action.payload;
+    loginSuccess(state, action: PayloadAction<User>) {
+      state.user = action.payload;
       state.isAuthenticated = true;
     },
     logout(state) {
-      state.token = null;
+      state.user = null;
       state.isAuthenticated = false;
     },
   },
   extraReducers(builder) {
     builder
       .addCase(login.pending, (state) => {})
-      .addCase(login.fulfilled, (state, action: PayloadAction<User[]>) => {})
-      .addCase(login.rejected, (state, action: PayloadAction<string | undefined>) => {});
+      .addCase(login.fulfilled, (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+        state.isAuthenticated = true; 
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.user = null; 
+        state.isAuthenticated = false; 
+      });
   },
 });
 

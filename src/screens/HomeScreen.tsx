@@ -3,10 +3,10 @@ import { View, Text, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity, 
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProducts } from '../ReduxToolkit/Actions/ProductsActions';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { Product } from '../Interfaces/Index';
 import FavoriteIcon from '../Components/FavoriteIconHome';
 import SearchBar from '../Components/SearchBar';
+import { itemWidth } from '../Constants';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -53,7 +53,6 @@ const HomeScreen = () => {
   const renderLoading = () => (
     <View style={styles.loadingContainer}>
       <View style={styles.cartActivityIndicator}>
-        <Icon name="cart-outline" size={30} color="black" />
         <ActivityIndicator size="large" color="#378ff8" style={styles.activityIndicator} />
       </View>
       <Text style={styles.loadingText}>Loading...</Text>
@@ -66,7 +65,10 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <SearchBar onSearch={handleSearch} navigation={undefined} />
+    <SearchBar onSearch={handleSearch} navigation={undefined} />
+    {loading ? (
+      renderLoading() // Show loading indicator when loading is true
+    ) : (
       <FlatList
         data={filteredProducts} 
         keyExtractor={(item) => item.id.toString()}
@@ -74,12 +76,11 @@ const HomeScreen = () => {
         contentContainerStyle={styles.listContainer}
         numColumns={2}
       />
+    )}
     </View>
   );
 };
 
-const windowWidth = Dimensions.get('window').width;
-const itemWidth = windowWidth / 2;
 
 const styles = StyleSheet.create({
   container: {

@@ -6,7 +6,6 @@ import HomeScreen from '../Screens/HomeScreen';
 import DetailsScreen from '../Screens/DetailsScreen';
 import LoginScreen from '../Screens/LoginScreen';
 import CartIconDetails from '../Components/CartIconDetails';
-import ProductsSlice from '../ReduxToolkit/Reducers/ProductsSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginSuccess } from '../ReduxToolkit/Reducers/LoginSlice';
 import { AppLogo } from '../Components/Logo';

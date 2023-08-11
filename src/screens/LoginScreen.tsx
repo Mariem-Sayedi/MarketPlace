@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, LogBox, Alert } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginSuccess } from '../ReduxToolkit/Reducers/LoginSlice';
 import { AppLogo } from '../Components/Logo';
-import LogoutButton from '../Components/LogOutButton';
 import { MAIN_BLUE_COLOR } from '../Constants/Colors';
+import axios from 'axios';
 
 const LoginScreen = () => {
   const dispatch = useDispatch();
@@ -46,16 +46,30 @@ const LoginScreen = () => {
     try {
       const isValid = validateForm();
       if (!isValid) return;
-
-      // Simulating a successful login with a token
-      const token = 'your_auth_token_here';
-      await dispatch(loginSuccess(token));
-      await AsyncStorage.setItem('authToken', token);
-      navigation.navigate('Marketplace');
+  
+      const response = await axios.post('https://fakestoreapi.com/auth/login', {
+        username,
+        password,
+      });
+  
+      console.log('API Response:', response.data);
+  
+      // Assuming the API returns a token property
+      const token = response.data.token;
+  
+      console.log('Token:', token);
+  
+      // Dispatch the login action only if the token is available
+      if (token) {
+        dispatch(loginSuccess(token));
+        await AsyncStorage.setItem('authToken', token);
+        navigation.navigate('MarketPlace');
+      }
     } catch (error) {
-      // Handle login error
-    }
+      Alert.alert("please enter valid username and password");   
+ }
   };
+  
 
   return (
     <View style={styles.container}>

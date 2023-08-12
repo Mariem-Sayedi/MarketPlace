@@ -68,3 +68,6 @@ yarn-error.log
 # Exclure Node.js et React Native
 node_modules/
 package-lock.json
+
+# Exclure release
+release/

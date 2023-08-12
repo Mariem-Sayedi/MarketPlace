@@ -1,31 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Button, FlatList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../ReduxToolkit/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MAIN_BLUE_COLOR } from '../Constants/Colors';
 import { Product } from '../Interfaces/Index';
-import { clearFavorite } from '../ReduxToolkit/Reducers/FavoriteSlice';
+import { clearFavorite, updateFavorite } from '../ReduxToolkit/Reducers/FavoriteSlice';
 import LottieView from 'lottie-react-native';
+import { handleImageClick, itemWidth } from '../Constants';
 
 const FavoriteScreen = () => {
   const favoriteProducts = useSelector((state: RootState) => state.favorite.products);
   const dispatch = useDispatch();
   const [products, setProducts] = useState<Product[]>([]);
 
+  
   useEffect(() => {
     (async () => {
-      console.log('favoriteProducts',favoriteProducts)
       const storedProducts = await AsyncStorage.getItem('favoriteProducts');
       if (storedProducts) {
         const parsedProducts = JSON.parse(storedProducts);
+        dispatch(updateFavorite(parsedProducts)); // Dispatch the updateFavorite action
         setProducts(parsedProducts);
       } else {
-        setProducts([])
+        setProducts([]);
       }
     })();
-  }, [favoriteProducts]);
+  }, []);
 
+  useEffect(() => {
+    setProducts(favoriteProducts);
+  },[favoriteProducts])
   
 
   const handleClearFavorite = async () => {
@@ -35,7 +40,7 @@ const FavoriteScreen = () => {
   };
 
   const renderItem = ({ item }: { item: Product }) => (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => handleImageClick(item)}>
       <View style={styles.productContainer}>
         <Image style={styles.productImage} source={{ uri: item.image }} />
         <View style={styles.productInfoContainer}>
@@ -46,20 +51,30 @@ const FavoriteScreen = () => {
     </TouchableOpacity>
   );
 
+  const animationRef = useRef<LottieView>(null);
+
+  useEffect(() => {
+    animationRef.current?.play();
+
+    // Or set a specific startFrame and endFrame with:
+    animationRef.current?.play(30, 120);
+  }, []);
+
   if (products.length === 0) {
     return (
       <View style={styles.container}>
         <View style={styles.emptyFavoriteContainer}>
-          <LottieView
+          {/* <LottieView
             source={require('../Assets/emptyAnimation.json')}
-            autoPlay
-            loop
-          />
+            // autoPlay
+            // loop
+            ref={animationRef}
+          /> */}
           <Text style={styles.emptyFavoriteText}>No products in favorite list yet.</Text>
         </View>
       </View>
     );
-  }
+  // }
 
   return (
     <View style={styles.container}>
@@ -71,13 +86,9 @@ const FavoriteScreen = () => {
         contentContainerStyle={styles.listContainer}
         numColumns={2} // Display two products per row 
       />
-      <View style={styles.clearFavoriteButtonContainer}>
-        <Button
-          title="Clear all"
-          onPress={handleClearFavorite}
-          color={MAIN_BLUE_COLOR}
-        />
-      </View>
+      <TouchableOpacity onPress={handleClearFavorite} style={styles.clearFavoriteButtonContainer}>
+        <Text>Clear all</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -114,15 +125,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
-    width: 190,
-    height: 310,
-    margin: 8,
+    width: 180,
+    height: 290,
+    margin: 3.5,
   },
   productImage: {
-    width: 100,
+    width: itemWidth - 32,
     height: 150,
     resizeMode: 'contain',
-    marginRight: 10,
   },
   productInfoContainer: {
     flex: 1,
@@ -155,5 +165,4 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
-
 export default FavoriteScreen;

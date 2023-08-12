@@ -1,14 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Product } from '../../Interfaces/Index';
 
-type Product = {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  image: string;
-  quantity: number;
-};
 
 type CartState = {
   products: Product[];
@@ -41,7 +34,11 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.products = [];
       AsyncStorage.setItem('cartProducts', JSON.stringify([]));  
-    }
+    },
+    updateCart: (state, action: PayloadAction<Product[]>) => {
+      state.products = action.payload;
+      AsyncStorage.setItem('cartProducts', JSON.stringify(state.products));
+    },
   }});
-export const { toggleCart, clearCart, saveCart } = cartSlice.actions;
+export const { toggleCart, clearCart, saveCart, updateCart } = cartSlice.actions;
 export default cartSlice.reducer;

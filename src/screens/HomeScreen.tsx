@@ -6,7 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 import { Product } from '../Interfaces/Index';
 import FavoriteIcon from '../Components/FavoriteIconHome';
 import SearchBar from '../Components/SearchBar';
-import { itemWidth } from '../Constants';
+import { handleImageClick, itemWidth } from '../Constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { updateFavorite } from '../ReduxToolkit/Reducers/FavoriteSlice';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -24,13 +26,24 @@ const HomeScreen = () => {
 
   useEffect(() => {
     if (items?.length) {
+      // const itemsWithFavourite = items?.map(el => )
       setFilteredProducts(items);
     }
   }, [items]);
 
-  const handleImageClick = (item: Product) => {
-    navigation.navigate('Product Detail', { product: item });
-  };
+  // MARK this is for favourite product issue
+  useEffect(() => {
+    (async () => {
+      const storedProducts = await AsyncStorage.getItem('favoriteProducts');
+      if (storedProducts) {
+        const parsedProducts = JSON.parse(storedProducts);
+        dispatch(updateFavorite(parsedProducts)); // Dispatch the updateFavorite action
+        setProducts(parsedProducts);
+      } 
+    })();
+  }, []);
+
+  
 
   const handleSearch = useCallback((searchText) => {
     const filteredItems = items.filter(item =>

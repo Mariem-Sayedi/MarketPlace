@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, TextInput, Button, Dimensions } from 'react-native';
 import { useDispatch } from 'react-redux';
 import CartIconDetails from '../Components/CartIconDetails';
@@ -7,12 +7,14 @@ import { toggleCart } from '../ReduxToolkit/Reducers/CartSlice';
 import AddToCart from '../Components/AddToCart';
 import { DetailsScreenProps, Product } from '../Interfaces/Index';
 import { windowWidth } from '../Constants';
+import { useNavigation } from '@react-navigation/native';
 
 
 const DetailsScreen: React.FC<DetailsScreenProps> = ({ route }) => {
   const { product} = route.params;
   const dispatch = useDispatch();
   const [quantityInput, setQuantityInput] = useState('0'); 
+  const navigation = useNavigation()
 
   const handleAddToCart = () => {
     const quantity = parseInt(quantityInput, 10);
@@ -20,6 +22,14 @@ const DetailsScreen: React.FC<DetailsScreenProps> = ({ route }) => {
       dispatch(toggleCart({ product, quantity }));
     }
   };
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <CartIconDetails product={product} />
+      ),
+    });  },[])
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

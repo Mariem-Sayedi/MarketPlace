@@ -20,7 +20,7 @@ const RootNavigator = () => {
   useEffect(() => {
     // Rehydrate the token on app start
     const rehydrateToken = async () => {
-      const storedToken = await AsyncStorage.getItem('authToken');
+      const storedToken = await AsyncStorage.getItem('token');      
       if (storedToken) {
         dispatch(loginSuccess(storedToken));
       }
@@ -28,6 +28,7 @@ const RootNavigator = () => {
     
     rehydrateToken();
   }, []);
+
   return (
     <Stack.Navigator>
       {isAuthenticated ? (
@@ -43,7 +44,7 @@ const RootNavigator = () => {
             name="Product Detail"
             component={DetailsScreen}
             options={({ route }) => ({  
-              headerRight: () => <CartIconDetails product={route.params.product} />, 
+              headerRight: () => <CartIconDetails product={route?.params?.product} />, 
             })}
           />
         </>

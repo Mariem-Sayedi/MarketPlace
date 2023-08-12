@@ -36,9 +36,13 @@ const favoriteSlice = createSlice({
     clearFavorite: (state) => {
       state.products = [];
       AsyncStorage.setItem('favoriteProducts', JSON.stringify([]));  
-    }
+    },
+    updateFavorite: (state, action: PayloadAction<Product[]>) => {
+      state.products = action.payload;
+      AsyncStorage.setItem('favoriteProducts', JSON.stringify(state.products));
+    },
   },
 });
 
-export const { toggleFavorite, saveFavorite, clearFavorite } = favoriteSlice.actions;
+export const { toggleFavorite, saveFavorite, clearFavorite, updateFavorite } = favoriteSlice.actions;
 export default favoriteSlice.reducer;

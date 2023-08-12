@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, LogBox, Alert } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { View, Text, TextInput, Alert } from 'react-native';
+import { useDispatch } from 'react-redux';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loginSuccess } from '../ReduxToolkit/Reducers/LoginSlice';
 import { AppLogo } from '../Components/Logo';
 import { MAIN_BLUE_COLOR } from '../Constants/Colors';
-import axios from 'axios';
+import { TouchableOpacity } from 'react-native';
+import { login } from '../ReduxToolkit/Actions/LoginAction';
 
 const LoginScreen = () => {
   const dispatch = useDispatch();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('mor_2314');
+  const [password, setPassword] = useState('83r5^_');
   const navigation = useNavigation();
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -46,25 +45,7 @@ const LoginScreen = () => {
     try {
       const isValid = validateForm();
       if (!isValid) return;
-  
-      const response = await axios.post('https://fakestoreapi.com/auth/login', {
-        username,
-        password,
-      });
-  
-      console.log('API Response:', response.data);
-  
-      // Assuming the API returns a token property
-      const token = response.data.token;
-  
-      console.log('Token:', token);
-  
-      // Dispatch the login action only if the token is available
-      if (token) {
-        dispatch(loginSuccess(token));
-        await AsyncStorage.setItem('authToken', token);
-        navigation.navigate('MarketPlace');
-      }
+      dispatch(login({username, password}));
     } catch (error) {
       Alert.alert("please enter valid username and password");   
  }
@@ -92,9 +73,9 @@ const LoginScreen = () => {
         onChangeText={setPassword}
       />
       {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-      <View style={styles.button}>
-        <Button title="Log in" onPress={handleLogin} />
-      </View>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.loginTxt}>Log in</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -136,11 +117,17 @@ const styles = StyleSheet.create({
     paddingVertical: 12, 
     paddingHorizontal: 8, 
     align: 'center',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   error: {
     color: 'red',
     marginBottom: 10,
   },
+  loginTxt: {
+    color: 'white',
+    fontSize: 14
+  }
 });
 
 export default LoginScreen;

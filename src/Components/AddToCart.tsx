@@ -1,6 +1,5 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet, View, Text, Button } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleCart } from '../ReduxToolkit/Reducers/CartSlice';
 import { MAIN_BLUE_COLOR } from '../Constants/Colors';

@@ -25,16 +25,12 @@ const CartIcon = ({ product }) => {
 
   return (
     <TouchableOpacity onPress={ navigateToCartScreen } style={styles.cartIconContainer}>
-      {isCart ? (
         <View style={styles.cartIcon}>
           <Icon name="cart" size={30} color={getTotalCartCount() > 0 ? 'red' : '#378ff8'} />
           {getTotalCartCount() > 0 && (
             <Text style={styles.cartIconText}>{getTotalCartCount()}</Text>
           )}
         </View>
-      ) : (
-        <Icon name="cart-outline" size={30} color="black" />
-      )}
     </TouchableOpacity>
   );
 };

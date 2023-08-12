@@ -6,6 +6,8 @@ import { clearCart } from '../ReduxToolkit/Reducers/CartSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MAIN_BLUE_COLOR } from '../Constants/Colors';
 import { Product } from '../Interfaces/Index';
+import { handleImageClick, itemWidth } from '../Constants';
+import { Item } from 'react-navigation-header-buttons';
 
 
 const CartScreen = () => {
@@ -15,7 +17,6 @@ const CartScreen = () => {
 
   useEffect(() => {
     (async () => {
-      console.log('cartProducts',cartProducts)
       const storedProducts = await AsyncStorage.getItem('cartProducts');
       if (storedProducts) {
         const parsedProducts = JSON.parse(storedProducts);
@@ -37,7 +38,7 @@ const CartScreen = () => {
   };
 
   const renderItem = ({ item }: { item: Product }) => (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => handleImageClick(item)}>
       <View style={styles.productContainer}>
         <Image style={styles.productImage} source={{ uri: item.image }} />
         <View style={styles.productInfoContainer}>
@@ -70,13 +71,9 @@ const CartScreen = () => {
         numColumns={2} // Display two products per row 
       />
       <Text style={styles.totalPriceText}>Total Price: ${calculateTotalPrice()}</Text>
-      <View style={styles.clearCartButtonContainer}>
-        <Button
-          title="Clear Cart"
-          onPress={handleClearCart}
-          color={MAIN_BLUE_COLOR}
-        />
-      </View>
+      <TouchableOpacity onPress={handleClearCart} style={styles.clearCartButtonContainer}>
+        <Text>Clear all</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -113,15 +110,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 4,
-    width: 190,
-    height: 310,
-    margin: 8,
+    width: 180,
+    height: 290,
+    margin: 3.5,
   },
   productImage: {
-    width: 100,
+    width: itemWidth - 32,
     height: 150,
     resizeMode: 'contain',
-    marginRight: 10,
   },
   productInfoContainer: {
     flex: 1,
@@ -136,12 +132,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
   },
-  emptyFavoriteContainer: {
+  emptyCartContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  emptyFavoriteText: {
+  emptyCartText: {
     fontSize: 16,
   },
   quantityText: {
@@ -153,14 +149,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
     marginVertical: 10,
-  },
-  emptyCartContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyCartText: {
-    fontSize: 16,
   },
   clearCartButtonContainer: {
     marginTop: 10,

@@ -1,7 +1,6 @@
 import Icon from 'react-native-vector-icons/Ionicons';
 import { MAIN_BLUE_COLOR } from '../Constants/Colors';
-import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { StyleSheet, Text, View } from 'react-native';
 
 export const AppLogo = () => (
     <View style={styles.container}>

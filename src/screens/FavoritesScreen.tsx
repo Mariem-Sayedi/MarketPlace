@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MAIN_BLUE_COLOR } from '../Constants/Colors';
 import { Product } from '../Interfaces/Index';
 import { clearFavorite, updateFavorite } from '../ReduxToolkit/Reducers/FavoriteSlice';
-import LottieView from 'lottie-react-native';
 import { handleImageClick, itemWidth } from '../Constants';
 
 const FavoriteScreen = () => {
@@ -14,13 +13,12 @@ const FavoriteScreen = () => {
   const dispatch = useDispatch();
   const [products, setProducts] = useState<Product[]>([]);
 
-  
   useEffect(() => {
     (async () => {
       const storedProducts = await AsyncStorage.getItem('favoriteProducts');
       if (storedProducts) {
         const parsedProducts = JSON.parse(storedProducts);
-        dispatch(updateFavorite(parsedProducts)); // Dispatch the updateFavorite action
+        dispatch(updateFavorite(parsedProducts));
         setProducts(parsedProducts);
       } else {
         setProducts([]);
@@ -30,12 +28,10 @@ const FavoriteScreen = () => {
 
   useEffect(() => {
     setProducts(favoriteProducts);
-  },[favoriteProducts])
-  
+  }, [favoriteProducts]);
 
   const handleClearFavorite = async () => {
     dispatch(clearFavorite());
-    // Clear the favoriteProducts from AsyncStorage as well
     await AsyncStorage.removeItem('favoriteProducts');
   };
 
@@ -51,30 +47,15 @@ const FavoriteScreen = () => {
     </TouchableOpacity>
   );
 
-  const animationRef = useRef<LottieView>(null);
-
-  useEffect(() => {
-    animationRef.current?.play();
-
-    // Or set a specific startFrame and endFrame with:
-    animationRef.current?.play(30, 120);
-  }, []);
-
   if (products.length === 0) {
     return (
       <View style={styles.container}>
         <View style={styles.emptyFavoriteContainer}>
-          {/* <LottieView
-            source={require('../Assets/emptyAnimation.json')}
-            // autoPlay
-            // loop
-            ref={animationRef}
-          /> */}
           <Text style={styles.emptyFavoriteText}>No products in favorite list yet.</Text>
         </View>
       </View>
     );
-  // }
+  }
 
   return (
     <View style={styles.container}>
@@ -84,7 +65,7 @@ const FavoriteScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
-        numColumns={2} // Display two products per row 
+        numColumns={2}
       />
       <TouchableOpacity onPress={handleClearFavorite} style={styles.clearFavoriteButtonContainer}>
         <Text>Clear all</Text>
@@ -165,4 +146,5 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
 export default FavoriteScreen;

@@ -1,6 +1,6 @@
 # Marketplace
 
-Welcome to the Marketplace React Native App! This app provides a platform for buying and selling various products within a community.
+Welcome to the Marketplace React Native App! This app provides a platform for buying various products within a community.
 
 ## Features
 
